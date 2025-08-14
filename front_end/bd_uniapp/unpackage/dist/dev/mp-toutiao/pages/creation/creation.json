@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "AIGC风格化生成",
+  "usingComponents": {
+    "uni-section": "../../uni_modules/uni-section/components/uni-section/uni-section",
+    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "uni-row": "../../uni_modules/uni-row/components/uni-row/uni-row",
+    "uni-col": "../../uni_modules/uni-row/components/uni-col/uni-col",
+    "uni-popup": "../../uni_modules/uni-popup/components/uni-popup/uni-popup",
+    "uni-load-more": "../../uni_modules/uni-load-more/components/uni-load-more/uni-load-more"
+  }
+}

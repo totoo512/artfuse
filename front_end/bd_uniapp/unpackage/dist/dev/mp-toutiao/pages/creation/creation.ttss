@@ -1,0 +1,512 @@
+
+/* TODO: 页面整体布局样式说明
+ *
+ * .creation-container: 创作页面主容器
+ * - padding: 0 20rpx 左右边距，确保内容不贴边
+ * - padding-bottom: 100rpx 底部预留空间，避免被底部TabBar遮挡
+ * 
+ * 设计理念：
+ * - 简洁的容器设计，专注内容展示
+ * - 底部预留空间确保用户可以完整查看所有内容
+ * - 响应式设计适配不同屏幕尺寸
+ */
+.creation-container.data-v-4ffa4d58 {
+  padding: 0 20rpx;
+  padding-bottom: 100rpx;
+}
+
+/* TODO: 上传模块样式说明
+ *
+ * .upload-item: 单个上传项的容器
+ * - margin-bottom: 30rpx 模块间距，保持视觉分离
+ * 
+ * .upload-title: 上传区域标题
+ * - font-size: 32rpx 适中的标题字体大小
+ * - font-weight: bold 粗体突出重要性
+ * - color: #333 深灰色确保良好可读性
+ * 
+ * .upload-area: 上传区域主体
+ * - width: 100% 占满容器宽度
+ * - height: 200rpx 固定高度提供足够的点击区域
+ * - border: 2rpx dashed #ddd 虚线边框暗示可上传
+ * - background-color: #fafafa 浅灰背景区分于页面背景
+ * - 弹性布局居中对齐上传提示内容
+ * 
+ * 交互设计：
+ * - 虚线边框符合用户对上传区域的认知
+ * - 居中布局提供清晰的视觉焦点
+ * - 足够的高度确保良好的点击体验
+ */
+.upload-item.data-v-4ffa4d58 {
+  margin-bottom: 30rpx;
+}
+.upload-title.data-v-4ffa4d58 {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+.upload-area.data-v-4ffa4d58 {
+  width: 100%;
+  height: 200rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+}
+
+/* TODO: 上传状态样式说明
+ *
+ * .upload-placeholder: 上传提示内容容器
+ * - 垂直排列图标和文字
+ * - 居中对齐提供清晰的视觉引导
+ * 
+ * .upload-text: 上传提示文字
+ * - font-size: 24rpx 较小字体，作为辅助说明
+ * - color: #999 浅灰色，降低视觉权重
+ * 
+ * .uploaded-image: 已上传图片样式
+ * - 占满上传区域，替换上传提示
+ * - 圆角设计保持视觉一致性
+ * 
+ * 状态切换：
+ * - 未上传：显示虚线框和上传提示
+ * - 已上传：显示图片预览，隐藏上传提示
+ */
+.upload-placeholder.data-v-4ffa4d58 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.upload-text.data-v-4ffa4d58 {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 10rpx;
+}
+.uploaded-image.data-v-4ffa4d58 {
+  width: 100%;
+  height: 100%;
+  border-radius: 8rpx;
+}
+
+/* TODO: 看展照片网格布局样式说明
+ *
+ * .exhibition-grid: 看展照片网格容器
+ * - display: grid 使用CSS Grid布局
+ * - grid-template-columns: repeat(3, 1fr) 三列等宽布局
+ * - gap: 15rpx 网格间距，保持视觉平衡
+ * - margin-bottom: 20rpx 与下方内容保持间距
+ * 
+ * 布局优势：
+ * - 三列布局最大化利用屏幕空间
+ * - 等宽设计保持视觉一致性
+ * - Grid布局自动处理换行和对齐
+ * - 响应式设计适配不同屏幕尺寸
+ */
+.exhibition-grid.data-v-4ffa4d58 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15rpx;
+  margin-bottom: 20rpx;
+}
+
+/* TODO: 看展照片项目样式说明
+ *
+ * .exhibition-item: 单个看展照片容器
+ * - position: relative 为删除按钮提供定位基准
+ * - aspect-ratio: 1 保持正方形比例
+ * - border-radius: 8rpx 圆角设计增加美观性
+ * - overflow: hidden 确保图片不超出容器边界
+ * 
+ * .exhibition-image: 看展照片图片
+ * - 占满容器，保持图片完整显示
+ * 
+ * .delete-btn: 删除按钮
+ * - position: absolute 绝对定位在右上角
+ * - 半透明黑色背景确保在各种图片上都可见
+ * - 圆形设计符合现代UI趋势
+ * - 弹性布局居中对齐删除图标
+ * 
+ * 交互设计：
+ * - 正方形布局保持视觉整齐
+ * - 删除按钮位置固定，操作便捷
+ * - 半透明设计不过分干扰图片内容
+ */
+.exhibition-item.data-v-4ffa4d58 {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+.exhibition-image.data-v-4ffa4d58 {
+  width: 100%;
+  height: 100%;
+}
+.delete-btn.data-v-4ffa4d58 {
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  width: 30rpx;
+  height: 30rpx;
+  background-color: rgba(0,0,0,0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TODO: 添加看展照片按钮样式说明
+ *
+ * .add-exhibition-btn: 添加更多看展照片的按钮
+ * - aspect-ratio: 1 与照片项目保持相同比例
+ * - border: 2rpx dashed #ddd 虚线边框暗示可添加
+ * - background-color: #fafafa 浅灰背景区分于照片
+ * - 弹性布局居中对齐添加图标
+ * 
+ * 设计理念：
+ * - 与照片项目保持一致的尺寸和布局
+ * - 虚线边框符合用户对添加操作的认知
+ * - 浅色背景不干扰已有照片的视觉效果
+ * - 居中的加号图标提供清晰的操作提示
+ */
+.add-exhibition-btn.data-v-4ffa4d58 {
+  aspect-ratio: 1;
+  border: 2rpx dashed #ddd;
+  border-radius: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fafafa;
+}
+
+/* TODO: 相册选择区域样式说明
+ *
+ * .album-section: 相册选择区域容器
+ * - margin-top: 20rpx 与上方内容保持间距
+ * 
+ * .album-tip: 相册提示信息容器
+ * - 水平排列图标和提示文字
+ * - 为用户提供操作说明
+ * 
+ * .tip-text: 提示文字样式
+ * - font-size: 24rpx 较小字体，作为辅助说明
+ * - color: #666 中等灰色，适中的视觉权重
+ * - margin-left: 8rpx 与图标保持适当间距
+ * 
+ * .album-btn: 相册选择按钮
+ * - width: 100% 占满容器宽度
+ * - padding: 20rpx 提供足够的点击区域
+ * - background-color: #f8f8f8 浅灰背景区分于主要操作
+ * - border: 1rpx solid #ddd 细边框增加层次感
+ * - 圆角设计保持视觉一致性
+ * 
+ * 交互设计：
+ * - 全宽按钮提供良好的点击体验
+ * - 浅色背景表明这是次要操作
+ * - 清晰的边框和圆角符合现代UI设计
+ */
+.album-section.data-v-4ffa4d58 {
+  margin-top: 20rpx;
+}
+.album-tip.data-v-4ffa4d58 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+.tip-text.data-v-4ffa4d58 {
+  font-size: 24rpx;
+  color: #666;
+  margin-left: 8rpx;
+}
+.album-btn.data-v-4ffa4d58 {
+  width: 100%;
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* TODO: 生成按钮区域样式说明
+ *
+ * .generate-section: 生成按钮区域容器
+ * - margin: 40rpx 0 上下较大间距，突出重要性
+ * 
+ * .generate-btn: 主要生成按钮
+ * - width: 100% 占满容器宽度
+ * - height: 80rpx 较高的按钮提供良好的点击体验
+ * - font-size: 32rpx 较大字体突出重要性
+ * - background-color: #007aff 系统蓝色，表明主要操作
+ * - color: white 白色文字确保良好对比度
+ * - border: none 无边框的现代设计
+ * - border-radius: 8rpx 圆角设计保持一致性
+ * 
+ * 按钮状态样式：
+ * - :disabled 禁用状态：灰色背景和文字
+ * - .loading 加载状态：灰色背景表明正在处理
+ * 
+ * 设计理念：
+ * - 主要操作使用系统色彩突出重要性
+ * - 较大的尺寸和字体确保易于操作
+ * - 状态变化提供清晰的视觉反馈
+ * - 全宽设计符合移动端操作习惯
+ */
+.generate-section.data-v-4ffa4d58 {
+  margin: 40rpx 0;
+}
+.generate-btn.data-v-4ffa4d58 {
+  width: 100%;
+  height: 80rpx;
+  font-size: 32rpx;
+  background-color: #007aff;
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+}
+.generate-btn.data-v-4ffa4d58:disabled {
+  background-color: #ccc;
+  color: #999;
+}
+.generate-btn.loading.data-v-4ffa4d58 {
+  background-color: #ccc;
+}
+
+/* TODO: 生成结果展示样式说明
+ *
+ * .result-grid: 生成结果网格容器
+ * - display: grid 使用CSS Grid布局
+ * - grid-template-columns: repeat(2, 1fr) 两列等宽布局
+ * - gap: 15rpx 网格间距，保持视觉平衡
+ * - margin-bottom: 30rpx 与下方内容保持间距
+ * 
+ * 布局设计：
+ * - 两列布局平衡了展示效果和图片大小
+ * - 比看展照片的三列布局更大，突出生成结果
+ * - Grid布局确保整齐的排列和自动换行
+ * 
+ * .result-item: 单个生成结果容器
+ * - position: relative 为选中标记提供定位基准
+ * - aspect-ratio: 1 保持正方形比例
+ * - border-radius: 12rpx 较大圆角增加精致感
+ * - overflow: hidden 确保图片不超出容器
+ * - border: 3rpx solid transparent 预留选中边框空间
+ * 
+ * .result-item.selected: 选中状态样式
+ * - border-color: #007aff 系统蓝色边框表明选中
+ * 
+ * .result-image: 生成结果图片
+ * - 占满容器，完整展示生成效果
+ * 
+ * .selected-mark: 选中标记
+ * - position: absolute 绝对定位在右上角
+ * - 圆形蓝色背景，内含对勾图标
+ * - 提供清晰的选中状态视觉反馈
+ * 
+ * 交互设计：
+ * - 较大的圆角增加精致感，突出生成结果的重要性
+ * - 双重选中反馈：边框颜色 + 选中标记
+ * - 透明边框预留空间，避免选中时布局跳动
+ */
+.result-grid.data-v-4ffa4d58 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15rpx;
+  margin-bottom: 30rpx;
+}
+.result-item.data-v-4ffa4d58 {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12rpx;
+  overflow: hidden;
+  border: 3rpx solid transparent;
+}
+.result-item.selected.data-v-4ffa4d58 {
+  border-color: #007aff;
+}
+.result-image.data-v-4ffa4d58 {
+  width: 100%;
+  height: 100%;
+}
+.selected-mark.data-v-4ffa4d58 {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  background-color: #007aff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* TODO: 视频生成选项样式说明
+ *
+ * .video-option: 视频生成选项容器
+ * - margin-bottom: 30rpx 与下方内容保持间距
+ * 
+ * .option-item: 选项项目容器
+ * - display: flex 弹性布局
+ * - justify-content: space-between 两端对齐
+ * - align-items: center 垂直居中对齐
+ * - padding: 20rpx 0 上下内边距提供点击区域
+ * 
+ * .option-label: 选项标签文字
+ * - font-size: 28rpx 适中的字体大小
+ * - color: #333 深灰色确保可读性
+ * 
+ * .video-tip: 视频生成提示信息
+ * - 水平排列图标和提示文字
+ * - background-color: #fff7e6 浅橙色背景突出提示
+ * - padding: 15rpx 20rpx 内边距确保内容舒适
+ * - border-radius: 8rpx 圆角设计保持一致性
+ * - margin-top: 10rpx 与选项保持间距
+ * 
+ * 设计理念：
+ * - 清晰的选项布局便于用户理解和操作
+ * - 彩色提示背景吸引用户注意重要信息
+ * - 弹性布局确保在不同内容长度下的良好表现
+ */
+.video-option.data-v-4ffa4d58 {
+  margin-bottom: 30rpx;
+}
+.option-item.data-v-4ffa4d58 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+}
+.option-label.data-v-4ffa4d58 {
+  font-size: 28rpx;
+  color: #333;
+}
+.video-tip.data-v-4ffa4d58 {
+  display: flex;
+  align-items: center;
+  padding: 15rpx 20rpx;
+  background-color: #fff7e6;
+  border-radius: 8rpx;
+  margin-top: 10rpx;
+}
+
+/* TODO: 智能文案列表样式说明
+ *
+ * .caption-list: 文案列表容器
+ * - margin-bottom: 30rpx 与下方内容保持间距
+ * 
+ * .caption-item: 单个文案项目容器
+ * - display: flex 弹性布局
+ * - justify-content: space-between 两端对齐
+ * - align-items: center 垂直居中对齐
+ * - padding: 20rpx 内边距确保内容舒适
+ * - background-color: #f8f8f8 浅灰背景区分于页面背景
+ * - border-radius: 8rpx 圆角设计增加美观性
+ * - margin-bottom: 15rpx 项目间距保持分离
+ * 
+ * .caption-content: 文案内容文字
+ * - flex: 1 占据剩余空间
+ * - font-size: 26rpx 适中的阅读字体
+ * - color: #333 深灰色确保可读性
+ * - line-height: 1.4 行高确保良好的阅读体验
+ * - margin-right: 20rpx 与复制按钮保持间距
+ * 
+ * .copy-btn: 复制按钮
+ * - padding: 10rpx 20rpx 适中的内边距
+ * - background-color: #f8f8f8 与项目背景一致
+ * - border: 1rpx solid #ddd 细边框增加层次感
+ * - border-radius: 6rpx 较小圆角符合按钮特征
+ * - font-size: 24rpx 较小字体，作为辅助操作
+ * 
+ * 交互设计：
+ * - 卡片式设计便于阅读和操作
+ * - 复制按钮位置固定，操作便捷
+ * - 良好的行高和字体大小确保阅读舒适
+ */
+.caption-list.data-v-4ffa4d58 {
+  margin-bottom: 30rpx;
+}
+.caption-item.data-v-4ffa4d58 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 8rpx;
+  margin-bottom: 15rpx;
+}
+.caption-content.data-v-4ffa4d58 {
+  flex: 1;
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+  margin-right: 20rpx;
+}
+.copy-btn.data-v-4ffa4d58 {
+  padding: 10rpx 20rpx;
+  background-color: #f8f8f8;
+  border: 1rpx solid #ddd;
+  border-radius: 6rpx;
+  font-size: 24rpx;
+  color: #333;
+}
+
+/* TODO: 操作按钮区域样式说明
+ *
+ * .action-section: 操作按钮区域容器
+ * - margin-top: 30rpx 与上方内容保持间距
+ * 
+ * .action-btn: 操作按钮基础样式
+ * - width: 100% 占满容器宽度
+ * - height: 70rpx 适中的按钮高度
+ * - border: none 无边框的现代设计
+ * - border-radius: 8rpx 圆角设计保持一致性
+ * - font-size: 28rpx 适中的字体大小
+ * 
+ * .action-btn-default: 默认按钮样式
+ * - background-color: #f8f8f8 浅灰背景表明次要操作
+ * - color: #333 深灰文字确保可读性
+ * - border: 1rpx solid #ddd 细边框增加层次感
+ * 
+ * .action-btn-primary: 主要按钮样式
+ * - background-color: #007aff 系统蓝色突出重要性
+ * - color: white 白色文字确保良好对比度
+ * 
+ * .loading-content: 加载弹窗内容样式
+ * - padding: 40rpx 较大内边距确保内容舒适
+ * - background-color: #fff 白色背景突出弹窗
+ * - border-radius: 12rpx 较大圆角增加精致感
+ * - text-align: center 居中对齐加载内容
+ * 
+ * 设计理念：
+ * - 按钮样式区分操作重要性
+ * - 全宽设计符合移动端操作习惯
+ * - 加载弹窗提供清晰的状态反馈
+ */
+.action-section.data-v-4ffa4d58 {
+  margin-top: 30rpx;
+}
+.action-btn.data-v-4ffa4d58 {
+  width: 100%;
+  height: 70rpx;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+.action-btn-default.data-v-4ffa4d58 {
+  background-color: #f8f8f8;
+  color: #333;
+  border: 1rpx solid #ddd;
+}
+.action-btn-primary.data-v-4ffa4d58 {
+  background-color: #007aff;
+  color: white;
+}
+.loading-content.data-v-4ffa4d58 {
+  padding: 40rpx;
+  background-color: #fff;
+  border-radius: 12rpx;
+  text-align: center;
+}

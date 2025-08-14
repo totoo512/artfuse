@@ -1,0 +1,1 @@
+{"version":3,"file":"profile.js","sources":["../../Users/zyx/Downloads/HBuilderX.4.63.2025042307-alpha/HBuilderX/plugins/uniapp-cli-vite/uniPage:/cGFnZXMvcHJvZmlsZS9wcm9maWxlLnZ1ZQ"],"sourcesContent":["import MiniProgramPage from 'D:/cursor_code/bd_uniapp/pages/profile/profile.vue'\ntt.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;AACA,GAAG,WAAW,eAAe;"}
