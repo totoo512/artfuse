@@ -6,6 +6,12 @@ if (!Math) {
   "./pages/creation/creation.js";
   "./pages/exhibition/exhibition.js";
   "./pages/profile/profile.js";
+  "./pages/exhibition-album/exhibition-album.js";
+  "./pages/photo-gallery/photo-gallery.js";
+  "./pages/generated-works/generated-works.js";
+  "./pages/points-detail/points-detail.js";
+  "./pages/membership/membership.js";
+  "./pages/work-detail/work-detail.js";
 }
 const _sfc_main = {
   onLaunch: function() {

@@ -3,7 +3,13 @@
     "pages/stylegen/stylegen",
     "pages/creation/creation",
     "pages/exhibition/exhibition",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/exhibition-album/exhibition-album",
+    "pages/photo-gallery/photo-gallery",
+    "pages/generated-works/generated-works",
+    "pages/points-detail/points-detail",
+    "pages/membership/membership",
+    "pages/work-detail/work-detail"
   ],
   "window": {
     "navigationBarTextStyle": "black",

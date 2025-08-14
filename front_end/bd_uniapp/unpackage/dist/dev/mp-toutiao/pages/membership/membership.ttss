@@ -1,0 +1,288 @@
+
+.membership-container.data-v-94171f33 {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	min-height: 100vh;
+}
+.membership-header.data-v-94171f33 {
+	padding: 20px 15px 30px;
+}
+.status-card.data-v-94171f33 {
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 20px;
+	padding: 25px;
+	-webkit-backdrop-filter: blur(10px);
+	        backdrop-filter: blur(10px);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+.member-info.data-v-94171f33 {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+.member-avatar.data-v-94171f33 {
+	position: relative;
+	margin-right: 15px;
+}
+.avatar-img.data-v-94171f33 {
+	width: 60px;
+	height: 60px;
+	border-radius: 30px;
+}
+.vip-badge.data-v-94171f33 {
+	position: absolute;
+	bottom: -2px;
+	right: -2px;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	background: #333;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.member-details.data-v-94171f33 {
+	flex: 1;
+}
+.member-name.data-v-94171f33 {
+	font-size: 20px;
+	font-weight: bold;
+	color: #333;
+	display: block;
+	margin-bottom: 5px;
+}
+.member-status.data-v-94171f33 {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+.status-text.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+}
+.status-text.vip.data-v-94171f33 {
+	color: #FFD700;
+	font-weight: 500;
+}
+.expire-date.data-v-94171f33 {
+	font-size: 12px;
+	color: #999;
+}
+.upgrade-prompt.data-v-94171f33 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-top: 15px;
+	border-top: 1px solid #f0f0f0;
+}
+.prompt-text.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+}
+.upgrade-btn.data-v-94171f33 {
+	padding: 8px 20px;
+	background: linear-gradient(45deg, #667eea, #764ba2);
+	color: white;
+	border: none;
+	border-radius: 20px;
+	font-size: 14px;
+}
+.benefits-section.data-v-94171f33,
+.usage-section.data-v-94171f33,
+.pricing-section.data-v-94171f33,
+.renewal-section.data-v-94171f33 {
+	background: white;
+	margin: 0 15px 15px;
+	border-radius: 16px;
+	overflow: hidden;
+}
+.benefits-grid.data-v-94171f33 {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 15px;
+	padding: 15px;
+}
+.benefit-item.data-v-94171f33 {
+	text-align: center;
+	padding: 20px 10px;
+	border-radius: 12px;
+	background: #f8f9fa;
+	position: relative;
+	transition: all 0.3s;
+}
+.benefit-item.available.data-v-94171f33 {
+	background: #e3f2fd;
+	border: 1px solid #007AFF;
+}
+.benefit-icon.data-v-94171f33 {
+	margin-bottom: 10px;
+}
+.benefit-title.data-v-94171f33 {
+	font-size: 14px;
+	font-weight: 500;
+	color: #333;
+	display: block;
+	margin-bottom: 5px;
+}
+.benefit-desc.data-v-94171f33 {
+	font-size: 12px;
+	color: #666;
+	display: block;
+	line-height: 1.4;
+}
+.vip-only.data-v-94171f33 {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	padding: 2px 6px;
+	background: rgba(255, 215, 0, 0.2);
+	border-radius: 8px;
+}
+.vip-text.data-v-94171f33 {
+	font-size: 10px;
+	color: #FFD700;
+}
+.usage-stats.data-v-94171f33 {
+	padding: 15px;
+}
+.usage-item.data-v-94171f33 {
+	margin-bottom: 20px;
+}
+.usage-info.data-v-94171f33 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 8px;
+}
+.usage-label.data-v-94171f33 {
+	font-size: 14px;
+	color: #333;
+}
+.usage-count.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+	font-weight: 500;
+}
+.pricing-plans.data-v-94171f33 {
+	padding: 15px;
+}
+.plan-item.data-v-94171f33 {
+	position: relative;
+	border: 2px solid #f0f0f0;
+	border-radius: 16px;
+	padding: 20px;
+	margin-bottom: 15px;
+	transition: all 0.3s;
+}
+.plan-item.recommended.data-v-94171f33 {
+	border-color: #007AFF;
+	box-shadow: 0 4px 20px rgba(0, 122, 255, 0.2);
+}
+.plan-item.selected.data-v-94171f33 {
+	border-color: #007AFF;
+	background: #f0f8ff;
+}
+.recommend-badge.data-v-94171f33 {
+	position: absolute;
+	top: -10px;
+	left: 20px;
+	padding: 4px 12px;
+	background: #007AFF;
+	border-radius: 10px;
+}
+.recommend-text.data-v-94171f33 {
+	font-size: 12px;
+	color: white;
+}
+.plan-header.data-v-94171f33 {
+	text-align: center;
+	margin-bottom: 20px;
+}
+.plan-name.data-v-94171f33 {
+	font-size: 18px;
+	font-weight: bold;
+	color: #333;
+	display: block;
+	margin-bottom: 10px;
+}
+.plan-price.data-v-94171f33 {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 2px;
+	margin-bottom: 5px;
+}
+.price-symbol.data-v-94171f33 {
+	font-size: 16px;
+	color: #007AFF;
+}
+.price-amount.data-v-94171f33 {
+	font-size: 32px;
+	font-weight: bold;
+	color: #007AFF;
+}
+.price-unit.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+}
+.original-price.data-v-94171f33 {
+	font-size: 14px;
+	color: #999;
+	text-decoration: line-through;
+}
+.plan-features.data-v-94171f33 {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.feature-item.data-v-94171f33 {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+.feature-text.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+}
+.purchase-actions.data-v-94171f33 {
+	padding: 20px 15px;
+	text-align: center;
+}
+.purchase-btn.data-v-94171f33 {
+	width: 100%;
+	padding: 15px;
+	background: linear-gradient(45deg, #667eea, #764ba2);
+	color: white;
+	border: none;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 500;
+	margin-bottom: 10px;
+}
+.purchase-btn.data-v-94171f33:disabled {
+	background: #ccc;
+}
+.purchase-note.data-v-94171f33 {
+	font-size: 12px;
+	color: #999;
+}
+.renewal-info.data-v-94171f33 {
+	padding: 20px 15px;
+	text-align: center;
+}
+.renewal-text.data-v-94171f33 {
+	font-size: 14px;
+	color: #666;
+	display: block;
+	margin-bottom: 15px;
+}
+.renewal-btn.data-v-94171f33 {
+	padding: 12px 30px;
+	background: linear-gradient(45deg, #667eea, #764ba2);
+	color: white;
+	border: none;
+	border-radius: 25px;
+	font-size: 16px;
+}

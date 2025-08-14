@@ -23,6 +23,42 @@
 		{
 			"navigationBarTitleText" : "个人中心"
 		}
+	},
+	{
+		"path": "pages/exhibition-album/exhibition-album",
+		"style": {
+			"navigationBarTitleText": "看展相册"
+		}
+	},
+	{
+		"path": "pages/photo-gallery/photo-gallery",
+		"style": {
+			"navigationBarTitleText": "照片详情"
+		}
+	},
+	{
+		"path": "pages/generated-works/generated-works",
+		"style": {
+			"navigationBarTitleText": "生成作品"
+		}
+	},
+	{
+		"path": "pages/points-detail/points-detail",
+		"style": {
+			"navigationBarTitleText": "积分明细"
+		}
+	},
+	{
+		"path": "pages/membership/membership",
+		"style": {
+			"navigationBarTitleText": "会员中心"
+		}
+	},
+	{
+		"path": "pages/work-detail/work-detail",
+		"style": {
+			"navigationBarTitleText": "作品详情"
+		}
 	}],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
