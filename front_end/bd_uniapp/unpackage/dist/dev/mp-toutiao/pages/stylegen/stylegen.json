@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "艺术风格化",
-  "usingComponents": {
-    "uni-section": "../../uni_modules/uni-section/components/uni-section/uni-section",
-    "uni-icons": "../../uni_modules/uni-icons/components/uni-icons/uni-icons"
-  }
-}
