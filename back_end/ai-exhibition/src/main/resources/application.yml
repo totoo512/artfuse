@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  datasource:
+    druid:
+      driver-class-name: ${zyy.datasource.driver-class-name}
+      url: jdbc:mysql://${zyy.datasource.host}:${zyy.datasource.port}/${zyy.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${zyy.datasource.username}
+      password: ${zyy.datasource.password}
+
+mybatis:
+  #mapper配置
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zyy.entity
+  configuration:
+    #驼峰转换
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      zyy:
+        mapper: debug
+        service: info
+        controller: info
+
+zyy:
+  jwt:
+    # 用户jwt配置
+    user-secret-key: ${zyy.jwt.user-secret-key}
+    user-ttl: 259200000
+    user-token-name: token
+  douyin:
+    appid: ${zyy.douyin.appid}
+    secret: ${zyy.douyin.secret}
+  volcengine-tos:
+    region: ${zyy.volcengine-tos.region}
+    endpoint: ${zyy.volcengine-tos.endpoint}
+    access-key: ${zyy.volcengine-tos.access-key}
+    secret-key: ${zyy.volcengine-tos.secret-key}
+    bucket: ${zyy.volcengine-tos.bucket}
