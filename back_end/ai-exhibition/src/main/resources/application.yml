@@ -6,6 +6,10 @@ spring:
     active: dev
   main:
     allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
   datasource:
     druid:
       driver-class-name: ${zyy.datasource.driver-class-name}
@@ -44,3 +48,7 @@ zyy:
     access-key: ${zyy.volcengine-tos.access-key}
     secret-key: ${zyy.volcengine-tos.secret-key}
     bucket: ${zyy.volcengine-tos.bucket}
+  volcengine-ark:
+    api-key: ${zyy.volcengine-ark.api-key}
+    base-url: ${zyy.volcengine-ark.base-url}
+    model: ${zyy.volcengine-ark.model}

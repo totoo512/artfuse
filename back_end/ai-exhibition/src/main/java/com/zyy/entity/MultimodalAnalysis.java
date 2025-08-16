@@ -37,13 +37,8 @@ public class MultimodalAnalysis implements Serializable {
     /**
     * 人物特征描述
     */
-    @ApiModelProperty("人物特征描述")
-    private String portraitFeatures;
-    /**
-    * 艺术风格描述
-    */
-    @ApiModelProperty("艺术风格描述")
-    private String artStyles;
+    @ApiModelProperty("人物特征和作品特征融合输出生图提示词")
+    private String analysisResult;
     /**
     * 分析完成时间
     */
