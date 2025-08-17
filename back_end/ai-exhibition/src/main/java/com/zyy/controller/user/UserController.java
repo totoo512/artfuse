@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -30,8 +31,9 @@ public class UserController {
 
     @PostMapping("/user/login")
     @ApiOperation("抖音用户登录")
-    public Result<UserLoginVO> login(UserLoginDTO userLoginDTO) {
+    public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO) {
         log.info("抖音用户登录：{}", userLoginDTO);
+
         User user = userService.dyLogin(userLoginDTO);
 
         Map<String, Object> claims = new HashMap<>();

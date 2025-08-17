@@ -3,7 +3,7 @@ package com.zyy.entity;
 import java.io.Serializable;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,7 +12,7 @@ import lombok.Data;
 * @TableName text_generation
 */
 @Data
-public class TextGeneration implements Serializable {
+public class GeneratedText implements Serializable {
 
     /**
     * 文本结果唯一标识
@@ -24,11 +24,6 @@ public class TextGeneration implements Serializable {
     */
     @ApiModelProperty("关联用户选择")
     private Long selectionId;
-    /**
-    * 图片简介
-    */
-    @ApiModelProperty("图片简介")
-    private String imageIntro;
     /**
     * 朋友圈文案
     */

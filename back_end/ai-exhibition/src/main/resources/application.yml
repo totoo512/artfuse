@@ -52,3 +52,7 @@ zyy:
     api-key: ${zyy.volcengine-ark.api-key}
     base-url: ${zyy.volcengine-ark.base-url}
     model: ${zyy.volcengine-ark.model}
+  klingai:
+    access-key: ${zyy.klingai.access-key}
+    secret-key: ${zyy.klingai.secret-key}
+    base-url: ${zyy.klingai.base-url}

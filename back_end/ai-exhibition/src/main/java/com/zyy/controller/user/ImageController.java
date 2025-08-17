@@ -1,19 +1,19 @@
 package com.zyy.controller.user;
 
-import com.zyy.constant.MessageConstant;
 import com.zyy.dto.ImageAnalysisDTO;
+import com.zyy.dto.ImageGenerateDTO;
+import com.zyy.dto.ImageSelectDTO;
 import com.zyy.dto.ImageUploadDTO;
 import com.zyy.result.Result;
 import com.zyy.service.ImageService;
-import com.zyy.utils.VolcengineTosUtil;
 import com.zyy.vo.ImageAnalysisVO;
+import com.zyy.vo.ImageGenerateVO;
+import com.zyy.vo.ImageSelectVO;
 import com.zyy.vo.ImageUploadVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/user/image")
@@ -83,4 +83,45 @@ public class ImageController {
         
         return Result.success(imageAnalysisVO);
     }
+    
+    /**
+     * 生成风格化图片接口
+     * @param imageGenerateDTO
+     * @return
+     */
+    @PostMapping("/generate")
+    @ApiOperation("生成风格化图片接口")
+    public Result<ImageGenerateVO> generateImages(@RequestBody ImageGenerateDTO imageGenerateDTO) {
+        log.info("生成风格化图片接口: {}", imageGenerateDTO);
+        
+        // 参数验证
+        if (imageGenerateDTO.getAnalysisId() == null) {
+            return Result.error("分析结果ID不能为空");
+        }
+        
+        ImageGenerateVO imageGenerateVO = imageService.generateImages(imageGenerateDTO);
+        
+        return Result.success(imageGenerateVO);
+    }
+    
+    /**
+     * 用户选择图片接口
+     * @param imageSelectDTO
+     * @return
+     */
+    @PostMapping("/select")
+    @ApiOperation("用户选择图片接口")
+    public Result<ImageSelectVO> selectImage(@RequestBody ImageSelectDTO imageSelectDTO) {
+        log.info("用户选择图片接口: {}", imageSelectDTO);
+        
+        // 参数验证
+        if (imageSelectDTO.getGenImageId() == null) {
+            return Result.error("生成图片ID不能为空");
+        }
+        
+        ImageSelectVO imageSelectVO = imageService.selectImage(imageSelectDTO);
+        
+        return Result.success(imageSelectVO);
+    }
+
 }

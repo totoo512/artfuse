@@ -1,7 +1,9 @@
 package com.zyy.mapper;
 
+import com.zyy.entity.GeneratedImage;
 import com.zyy.entity.MultimodalAnalysis;
 import com.zyy.entity.UploadedImage;
+import com.zyy.entity.UserSelection;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -43,4 +45,52 @@ public interface ImageMapper {
             "values(#{userId}, #{portraitImageId}, #{exhibitionImageIds}, #{analysisResult}, #{analysisTime})")
     @Options(useGeneratedKeys = true, keyProperty = "analysisId")
     void insertAnalysis(MultimodalAnalysis multimodalAnalysis);
+    
+    /**
+     * 插入生成图片记录
+     * @param generatedImage
+     */
+    @Insert("insert into generated_image(analysis_id, analysis_result, image_url, generate_time) " +
+            "values(#{analysisId}, #{analysisResult}, #{imageUrl}, #{generateTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "genImageId")
+    void insertGeneratedImage(GeneratedImage generatedImage);
+    
+    /**
+     * 批量插入生成图片记录
+     * @param generatedImages
+     */
+    void insertGeneratedImageBatch(List<GeneratedImage> generatedImages);
+    
+    /**
+     * 根据分析ID查询多模态分析结果
+     * @param analysisId
+     * @return
+     */
+    @Select("select * from multimodal_analysis where analysis_id = #{analysisId}")
+    MultimodalAnalysis getAnalysisById(Long analysisId);
+    
+    /**
+     * 根据生成图片ID查询生成图片记录
+     * @param genImageId
+     * @return
+     */
+    @Select("select * from generated_image where gen_image_id = #{genImageId}")
+    GeneratedImage getGeneratedImageById(Long genImageId);
+    
+    /**
+     * 插入用户选择记录
+     * @param userSelection
+     */
+    @Insert("insert into user_selection(user_id, gen_image_id, select_time) " +
+            "values(#{userId}, #{genImageId}, #{selectTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "selectionId")
+    void insertUserSelection(UserSelection userSelection);
+    
+    /**
+     * 根据选择ID查询用户选择记录
+     * @param selectionId
+     * @return
+     */
+    @Select("select * from user_selection where selection_id = #{selectionId}")
+    UserSelection getUserSelectionById(Long selectionId);
 }
