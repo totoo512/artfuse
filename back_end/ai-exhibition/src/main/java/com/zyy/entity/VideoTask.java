@@ -30,6 +30,11 @@ public class VideoTask implements Serializable {
     @ApiModelProperty("关联用户选择")
     private Long selectionId;
     /**
+    * 参考的用户上传图片ID
+    */
+    @ApiModelProperty("参考的用户上传图片ID")
+    private Long refImageId;
+    /**
     * 视频生成的核心Prompt
     */
     @ApiModelProperty("视频生成的核心Prompt")

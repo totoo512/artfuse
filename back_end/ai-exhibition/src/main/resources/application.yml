@@ -8,8 +8,10 @@ spring:
     allow-circular-references: true
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 50MB
+      enabled: true
+      file-size-threshold: 0
+      max-file-size: 50MB
+      max-request-size: 60MB
   datasource:
     druid:
       driver-class-name: ${zyy.datasource.driver-class-name}
@@ -27,8 +29,9 @@ mybatis:
 
 logging:
   level:
-    com:
-      zyy:
+    org.springframework.web.multipart: DEBUG  # 打印文件上传相关日志
+    org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration: DEBUG  # 打印自动配置日志
+    com.zyy:
         mapper: debug
         service: info
         controller: info

@@ -7,6 +7,7 @@ import com.zyy.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
@@ -23,7 +24,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler
-    public Result exceptionHandler(BaseException ex){
+    public Result<String> exceptionHandler(BaseException ex){
         log.error("异常信息：{}", ex.getMessage());
         return Result.error(ex.getMessage());
     }
@@ -34,7 +35,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler
-    public Result exceptionHandler(SQLIntegrityConstraintViolationException ex) {
+    public Result<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
         String message = ex.getMessage();
         if (message.contains("Duplicate entry")) {
             log.error(MessageConstant.ALREADY_EXISTS);
@@ -50,10 +51,21 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler
-    public Result exceptionHandler(DeletionNotAllowedException ex) {
+    public Result<String> exceptionHandler(DeletionNotAllowedException ex) {
         String message = ex.getMessage();
         log.error("不可删除：{}", message);
         return Result.error(message);
+    }
+
+    /**
+     * 捕获文件上传异常
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public Result<String> handleMaxSizeException(MaxUploadSizeExceededException ex) {
+        log.error("文件上传失败：{}", ex.getMessage());
+        return Result.error(MessageConstant.FILE_SIZE_EXCEED + ": " + ex.getMessage());
     }
 
 }

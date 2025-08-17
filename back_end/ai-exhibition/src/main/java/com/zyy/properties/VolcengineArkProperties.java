@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class VolcengineArkProperties {
 
     private String apiKey;
-    private String baseUrl = "https://ark.cn-beijing.volces.com/api/v3";
-    private String model = "doubao-seed-1-6-250615";
+    private String baseUrl;
+    private String model;
 
 }
