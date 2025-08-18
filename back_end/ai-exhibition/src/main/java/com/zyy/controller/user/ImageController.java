@@ -4,12 +4,14 @@ import com.zyy.dto.ImageAnalysisDTO;
 import com.zyy.dto.ImageGenerateDTO;
 import com.zyy.dto.ImageSelectDTO;
 import com.zyy.dto.ImageUploadDTO;
+import com.zyy.dto.SingleImageUploadDTO;
 import com.zyy.result.Result;
 import com.zyy.service.ImageService;
 import com.zyy.vo.ImageAnalysisVO;
 import com.zyy.vo.ImageGenerateVO;
 import com.zyy.vo.ImageSelectVO;
 import com.zyy.vo.ImageUploadVO;
+import com.zyy.vo.SingleImageUploadVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,6 +124,40 @@ public class ImageController {
         ImageSelectVO imageSelectVO = imageService.selectImage(imageSelectDTO);
         
         return Result.success(imageSelectVO);
+    }
+    
+    /**
+     * 单文件上传图片接口
+     * @param singleImageUploadDTO
+     * @return
+     */
+    @PostMapping("/single-upload")
+    @ApiOperation("单文件上传图片接口")
+    public Result<SingleImageUploadVO> singleUploadImage(@ModelAttribute SingleImageUploadDTO singleImageUploadDTO) {
+        log.info("单文件上传图片接口: imageType={}, fileName={}", 
+                singleImageUploadDTO.getImageType(), 
+                singleImageUploadDTO.getImage() != null ? singleImageUploadDTO.getImage().getOriginalFilename() : "null");
+        
+        // 参数验证
+        if (singleImageUploadDTO.getImageType() == null) {
+            return Result.error("图片类型不能为空");
+        }
+        
+        if (singleImageUploadDTO.getImageType() != 1 && singleImageUploadDTO.getImageType() != 2) {
+            return Result.error("图片类型错误，只支持1=人物照，2=看展照");
+        }
+        
+        if (singleImageUploadDTO.getImage() == null || singleImageUploadDTO.getImage().isEmpty()) {
+            return Result.error("图片文件不能为空");
+        }
+        
+        log.info("图片文件名：{}, 大小：{} bytes", 
+                singleImageUploadDTO.getImage().getOriginalFilename(),
+                singleImageUploadDTO.getImage().getSize());
+        
+        SingleImageUploadVO singleImageUploadVO = imageService.singleUploadImage(singleImageUploadDTO);
+        
+        return Result.success(singleImageUploadVO);
     }
 
 }

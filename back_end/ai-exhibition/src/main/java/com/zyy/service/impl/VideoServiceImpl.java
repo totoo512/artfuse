@@ -2,6 +2,7 @@ package com.zyy.service.impl;
 
 import com.zyy.dto.VideoTaskCreateDTO;
 import com.zyy.entity.GeneratedImage;
+import com.zyy.entity.UploadedImage;
 import com.zyy.entity.UserSelection;
 import com.zyy.entity.VideoTask;
 import com.zyy.exception.BaseException;
@@ -12,7 +13,7 @@ import com.zyy.context.BaseContext;
 import com.zyy.utils.VolcengineTosUtil;
 import com.zyy.vo.VideoTaskCreateVO;
 import com.zyy.vo.VideoTaskQueryVO;
-import org.springframework.beans.BeanUtils;
+import com.zyy.websocket.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +35,9 @@ public class VideoServiceImpl implements VideoService {
     
     @Autowired
     private VolcengineTosUtil volcengineTosUtil;
+    
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     @Override
     public VideoTaskCreateVO createVideoTask(VideoTaskCreateDTO videoTaskCreateDTO) {
@@ -52,7 +56,7 @@ public class VideoServiceImpl implements VideoService {
         }
         
         // 验证refImageId的有效性
-        GeneratedImage refImage = imageMapper.getGeneratedImageById(videoTaskCreateDTO.getRefImageId());
+        UploadedImage refImage = imageMapper.getById(videoTaskCreateDTO.getRefImageId());
         if (refImage == null) {
             throw new BaseException("参考图片不存在");
         }
@@ -77,9 +81,35 @@ public class VideoServiceImpl implements VideoService {
         // 保存到数据库
         videoMapper.insertVideoTask(videoTask);
         
+        // 获取图片URL用于WebSocket消息
+        String imageUrl1 = "";
+        String imageUrl2 = "";
+        
+        // imageUrl1: 从generated_image表通过genImageId获取
+        if (genImage != null) {
+            imageUrl1 = genImage.getImageUrl();
+        }
+        
+        // imageUrl2: 从uploaded_image表通过refImageId获取
+        imageUrl2 = refImage.getImageUrl();
+
+        // 构建WebSocket消息
+        String message = String.format(
+            "{\"userId\":\"%d\",\"taskId\":\"%d\",\"imageUrl1\":\"%s\",\"imageUrl2\":\"%s\"}",
+            userId, videoTask.getTaskId(), imageUrl1, imageUrl2
+        );
+        
+        // 发送WebSocket消息到所有连接
+        try {
+            webSocketServer.sendToAllClient(message);
+        } catch (Exception e) {
+            // WebSocket发送失败不影响主业务流程，只记录日志
+            System.err.println("WebSocket消息发送失败: " + e.getMessage());
+        }
+        
         // 构建返回结果
         VideoTaskCreateVO vo = new VideoTaskCreateVO();
-        vo.setTask_id(videoTask.getTaskId());
+        vo.setTaskId(videoTask.getTaskId());
         vo.setStatus(videoTask.getStatus());
         
         return vo;

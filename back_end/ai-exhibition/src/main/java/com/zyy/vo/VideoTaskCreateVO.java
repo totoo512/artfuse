@@ -15,7 +15,7 @@ public class VideoTaskCreateVO {
      * 任务ID
      */
     @ApiModelProperty(value = "任务ID")
-    private Long task_id;
+    private Long taskId;
 
     /**
      * 任务状态：1=排队中，2=处理中，3=完成，4=失败

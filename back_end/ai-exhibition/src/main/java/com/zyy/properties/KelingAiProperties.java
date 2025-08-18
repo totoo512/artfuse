@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "zyy.kelingai")
+@ConfigurationProperties(prefix = "zyy.klingai")
 public class KelingAiProperties {
     
     /**

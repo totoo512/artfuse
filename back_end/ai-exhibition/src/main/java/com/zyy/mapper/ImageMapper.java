@@ -56,12 +56,6 @@ public interface ImageMapper {
     void insertGeneratedImage(GeneratedImage generatedImage);
     
     /**
-     * 批量插入生成图片记录
-     * @param generatedImages
-     */
-    void insertGeneratedImageBatch(List<GeneratedImage> generatedImages);
-    
-    /**
      * 根据分析ID查询多模态分析结果
      * @param analysisId
      * @return

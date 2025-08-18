@@ -6,6 +6,7 @@ import com.zyy.dto.ImageAnalysisDTO;
 import com.zyy.dto.ImageGenerateDTO;
 import com.zyy.dto.ImageSelectDTO;
 import com.zyy.dto.ImageUploadDTO;
+import com.zyy.dto.SingleImageUploadDTO;
 import com.zyy.entity.GeneratedImage;
 import com.zyy.entity.MultimodalAnalysis;
 import com.zyy.entity.UploadedImage;
@@ -21,6 +22,7 @@ import com.zyy.vo.ImageGenerateVO;
 import com.zyy.vo.ImageSelectVO;
 import com.zyy.vo.ImageUploadVO;
 import com.zyy.vo.ImageVO;
+import com.zyy.vo.SingleImageUploadVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -297,6 +299,46 @@ public class ImageServiceImpl implements ImageService {
         
         return ImageSelectVO.builder()
                 .selectionId(userSelection.getSelectionId())
+                .build();
+    }
+    
+    @Override
+    @Transactional
+    public SingleImageUploadVO singleUploadImage(SingleImageUploadDTO singleImageUploadDTO) {
+        // 获取当前用户ID
+        Long userId = BaseContext.getCurrentId();
+        
+        // 验证图片类型
+        if (singleImageUploadDTO.getImageType() == null || 
+            (singleImageUploadDTO.getImageType() != 1 && singleImageUploadDTO.getImageType() != 2)) {
+            throw new BaseException("图片类型错误，只支持1=人物照，2=看展照");
+        }
+        
+        // 验证文件
+        if (singleImageUploadDTO.getImage() == null || singleImageUploadDTO.getImage().isEmpty()) {
+            throw new BaseException("图片文件不能为空");
+        }
+        
+        // 上传图片文件
+        String imageUrl = upload(singleImageUploadDTO.getImage());
+        
+        // 创建上传图片记录
+        UploadedImage uploadedImage = new UploadedImage();
+        uploadedImage.setUserId(userId);
+        uploadedImage.setImageType(singleImageUploadDTO.getImageType());
+        uploadedImage.setImageUrl(imageUrl);
+        uploadedImage.setUploadTime(LocalDateTime.now());
+        
+        // 保存到数据库
+        imageMapper.insert(uploadedImage);
+        
+        log.info("单文件图片上传成功，用户ID: {}, 图片类型: {}, 图片ID: {}", 
+                userId, singleImageUploadDTO.getImageType(), uploadedImage.getImageId());
+        
+        // 构建返回结果
+        return SingleImageUploadVO.builder()
+                .imageId(uploadedImage.getImageId())
+                .imageUrl(uploadedImage.getImageUrl())
                 .build();
     }
     
