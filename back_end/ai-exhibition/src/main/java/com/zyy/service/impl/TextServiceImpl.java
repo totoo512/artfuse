@@ -50,18 +50,28 @@ public class TextServiceImpl implements TextService {
         if (!userSelection.getUserId().equals(userId)) {
             throw new RuntimeException("无权限访问该选择记录");
         }
+        
+        // 3. 检查selectionId是否已存在文案数据，如果存在则直接返回
+        GeneratedText existingText = textMapper.getTextBySelectionId(textGenerateDTO.getSelectionId());
+        if (existingText != null) {
+            log.info("文案数据已存在，selectionId: {}, userId: {}", textGenerateDTO.getSelectionId(), userId);
+            return TextGenerateVO.builder()
+                    .textId(existingText.getTextId())
+                    .momentsCopy(existingText.getMomentsCopy())
+                    .build();
+        }
 
-        // 3. 根据selectionId查询对应的生成图片信息
+        // 4. 根据selectionId查询对应的生成图片信息
         Long genImageId = userSelection.getGenImageId();
         GeneratedImage generatedImage = imageMapper.getGeneratedImageById(genImageId);
         if (generatedImage == null) {
             throw new RuntimeException("生成图片记录不存在");
         }
 
-        // 4. 获取图片URL列表
+        // 5. 获取图片URL列表
         List<String> imageUrls = Collections.singletonList(generatedImage.getImageUrl());
 
-        // 5. 调用豆包生成朋友圈文案（基于图片内容）
+        // 6. 调用豆包生成朋友圈文案（基于图片内容）
         String prompt = """
                 你是一位专为社交媒体（如朋友圈、Instagram）创作文案的创意大师。你深谙如何将艺术氛围与个人情感融为一体，文字风格凝练、高级且富有感染力。
                 任务描述 (Task Description):
@@ -96,7 +106,7 @@ public class TextServiceImpl implements TextService {
             throw new RuntimeException("文案生成失败，请稍后重试");
         }
 
-        // 6. 保存生成结果到数据库
+        // 7. 保存生成结果到数据库
         GeneratedText generatedText = new GeneratedText();
         generatedText.setSelectionId(textGenerateDTO.getSelectionId());
         generatedText.setMomentsCopy(momentsCopy);
@@ -104,7 +114,7 @@ public class TextServiceImpl implements TextService {
 
         textMapper.insertGeneratedText(generatedText);
 
-        // 5. 返回结果
+        // 8. 返回结果
         return TextGenerateVO.builder()
                 .textId(generatedText.getTextId())
                 .momentsCopy(momentsCopy)

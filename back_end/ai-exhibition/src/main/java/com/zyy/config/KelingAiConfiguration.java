@@ -21,7 +21,8 @@ public class KelingAiConfiguration {
         return new KelingAiUtil(
             kelingAiProperties.getAccessKey(),
             kelingAiProperties.getSecretKey(),
-            kelingAiProperties.getBaseUrl()
+            kelingAiProperties.getBaseUrl(),
+            kelingAiProperties.getImageCount()
         );
     }
 }

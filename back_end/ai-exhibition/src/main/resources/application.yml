@@ -64,3 +64,4 @@ zyy:
     access-key: ${KLINGAI_ACCESS_KEY}
     secret-key: ${KLINGAI_SECRET_KEY}
     base-url: ${KLINGAI_BASE_URL}
+    image-count: ${KLINGAI_IMAGE_COUNT}

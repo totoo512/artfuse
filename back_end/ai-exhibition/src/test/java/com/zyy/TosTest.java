@@ -22,5 +22,8 @@ public class TosTest {
 
     @Test
     public void test() {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.USER_ID, 1);
+        System.out.println(JwtUtil.createJWT("14.103.244.167-ai_exhibition-GEPm7skLxNhXKx5M", 2592000000L, claims));
     }
 }

@@ -23,12 +23,14 @@ public class KelingAiUtil {
     private final String accessKey;
     private final String secretKey;
     private final String baseUrl;
+    private final Integer imageCount;
     private final RestTemplate restTemplate;
     
-    public KelingAiUtil(String accessKey, String secretKey, String baseUrl) {
+    public KelingAiUtil(String accessKey, String secretKey, String baseUrl, Integer imageCount) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.baseUrl = baseUrl;
+        this.imageCount = imageCount;
         this.restTemplate = new RestTemplate();
     }
     
@@ -67,7 +69,7 @@ public class KelingAiUtil {
             JSONObject requestBody = new JSONObject();
             requestBody.put("model_name", "kling-v2");
             requestBody.put("prompt", prompt);
-            requestBody.put("n", 4); // 生成4张图片
+            requestBody.put("n", imageCount); // 生成图片数量由配置决定
             requestBody.put("aspect_ratio", "3:4");
             
             // 添加主体图片列表（人物图片）

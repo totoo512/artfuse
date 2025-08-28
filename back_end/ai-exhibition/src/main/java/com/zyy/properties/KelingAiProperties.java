@@ -26,4 +26,9 @@ public class KelingAiProperties {
      * API基础URL
      */
     private String baseUrl;
+    
+    /**
+     * 生成图片数量
+     */
+    private Integer imageCount;
 }

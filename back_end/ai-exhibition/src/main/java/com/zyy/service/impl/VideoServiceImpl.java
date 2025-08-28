@@ -10,16 +10,21 @@ import com.zyy.mapper.ImageMapper;
 import com.zyy.mapper.VideoMapper;
 import com.zyy.service.VideoService;
 import com.zyy.context.BaseContext;
+import com.zyy.utils.MailUtil;
 import com.zyy.utils.VolcengineTosUtil;
 import com.zyy.vo.VideoTaskCreateVO;
 import com.zyy.vo.VideoTaskQueryVO;
 import com.zyy.websocket.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * 视频生成服务实现类
@@ -107,6 +112,9 @@ public class VideoServiceImpl implements VideoService {
             System.err.println("WebSocket消息发送失败: " + e.getMessage());
         }
         
+        // 异步发送邮件通知
+        sendTaskCreationEmail(videoTask.getTaskId(), userId);
+        
         // 构建返回结果
         VideoTaskCreateVO vo = new VideoTaskCreateVO();
         vo.setTaskId(videoTask.getTaskId());
@@ -160,6 +168,46 @@ public class VideoServiceImpl implements VideoService {
             return fileUrl;
         } catch (Exception e) {
             throw new BaseException("文件上传失败: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * 异步发送任务创建邮件通知
+     * @param taskId 任务ID
+     * @param userId 用户ID
+     */
+    @Async
+    public void sendTaskCreationEmail(Long taskId, Long userId) {
+        try {
+            // 配置收件人邮箱（可以配置为管理员邮箱）
+            Set<String> emails = new HashSet<>();
+            emails.add("q2777644688@gmail.com"); // 管理员邮箱
+            
+            // 邮件标题
+            String title = "ArtFuse - 新的视频生成任务";
+            
+            // 邮件内容（HTML格式）
+            String content = String.format(
+                "<html><body>" +
+                "<h3>ArtFuse生成任务创建</h3>" +
+                "<p>任务ID: %d</p>" +
+                "<p>用户ID: %d</p>" +
+                "<p>请访问管理系统查看详情：<a href='http://14.103.244.167/'>http://14.103.244.167/</a></p>" +
+                "<p>此邮件由ArtFuse系统自动发送，请勿回复。</p>" +
+                "</body></html>",
+                taskId, userId
+            );
+            
+            // 发送邮件
+            boolean success = MailUtil.sendEmail(emails, title, content);
+            if (success) {
+                System.out.println("任务创建邮件发送成功，任务ID: " + taskId);
+            } else {
+                System.err.println("任务创建邮件发送失败，任务ID: " + taskId);
+            }
+        } catch (Exception e) {
+            // 邮件发送失败不影响主业务流程，只记录错误日志
+            System.err.println("发送任务创建邮件时发生异常，任务ID: " + taskId + ", 错误: " + e.getMessage());
         }
     }
 }

@@ -4,6 +4,7 @@ import com.zyy.entity.GeneratedText;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * 文本生成数据访问层接口
@@ -19,5 +20,13 @@ public interface TextMapper {
             "VALUES (#{selectionId}, #{momentsCopy}, #{generateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "textId")
     void insertGeneratedText(GeneratedText generatedText);
+    
+    /**
+     * 根据selectionId查询文本记录
+     * @param selectionId 用户选择ID
+     * @return 生成的文本实体
+     */
+    @Select("SELECT * FROM generated_text WHERE selection_id = #{selectionId}")
+    GeneratedText getTextBySelectionId(Long selectionId);
 
 }
