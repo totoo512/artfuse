@@ -10,6 +10,7 @@ public interface UserMapper {
     @Select("select * from user where openid = #{openid}")
     User getByOpenid(String openid);
 
-    @Insert("insert into user(user_id, username, phone, openid, create_time) values(#{openid})")
+    @Insert("insert into user(user_id, username, phone, openid, create_time) " +
+            "values(#{userId}, #{username}, #{phone}, #{openid}, #{createTime})")
     void insert(User user);
 }

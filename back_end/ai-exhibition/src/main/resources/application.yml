@@ -1,11 +1,18 @@
 server:
   port: 8080
+  tomcat:
+    connection-timeout: 600s
+    keep-alive-timeout: 600s
 
 spring:
   profiles:
     active: dev
   main:
     allow-circular-references: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 60MB
   datasource:
     druid:
       driver-class-name: ${zyy.datasource.driver-class-name}
@@ -23,8 +30,9 @@ mybatis:
 
 logging:
   level:
-    com:
-      zyy:
+    org.springframework.web.multipart: DEBUG  # 打印文件上传相关日志
+    org.springframework.boot.autoconfigure.web.servlet.MultipartAutoConfiguration: DEBUG  # 打印自动配置日志
+    com.zyy:
         mapper: debug
         service: info
         controller: info
@@ -32,15 +40,28 @@ logging:
 zyy:
   jwt:
     # 用户jwt配置
-    user-secret-key: ${zyy.jwt.user-secret-key}
+    user-secret-key: ${JWT_USER_SECRET_KEY}
     user-ttl: 259200000
     user-token-name: token
+    # 管理员jwt配置
+    admin-secret-key: ${JWT_ADMIN_SECRET_KEY}
+    admin-ttl: 259200000
+    admin-token-name: token
   douyin:
-    appid: ${zyy.douyin.appid}
-    secret: ${zyy.douyin.secret}
+    appid: ${DOUYIN_APPID}
+    secret: ${DOUYIN_SECRET}
   volcengine-tos:
-    region: ${zyy.volcengine-tos.region}
-    endpoint: ${zyy.volcengine-tos.endpoint}
-    access-key: ${zyy.volcengine-tos.access-key}
-    secret-key: ${zyy.volcengine-tos.secret-key}
-    bucket: ${zyy.volcengine-tos.bucket}
+    region: ${VOLCENGINE_TOS_REGION}
+    endpoint: ${VOLCENGINE_TOS_ENDPOINT}
+    access-key: ${VOLCENGINE_TOS_ACCESS_KEY}
+    secret-key: ${VOLCENGINE_TOS_SECRET_KEY}
+    bucket: ${VOLCENGINE_TOS_BUCKET}
+  volcengine-ark:
+    api-key: ${VOLCENGINE_ARK_API_KEY}
+    base-url: ${VOLCENGINE_ARK_BASE_URL}
+    model: ${VOLCENGINE_ARK_MODEL}
+  klingai:
+    access-key: ${KLINGAI_ACCESS_KEY}
+    secret-key: ${KLINGAI_SECRET_KEY}
+    base-url: ${KLINGAI_BASE_URL}
+    image-count: ${KLINGAI_IMAGE_COUNT}

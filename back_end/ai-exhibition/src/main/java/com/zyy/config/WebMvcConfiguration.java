@@ -8,9 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 @Configuration
 @Slf4j
-public class WebMvcConfiguration extends WebMvcConfigurationSupport {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
     private JwtTokenUserInterceptor jwtTokenUserInterceptor;
@@ -35,12 +36,12 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      *
      * @param registry
      */
-    protected void addInterceptors(InterceptorRegistry registry) {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(jwtTokenUserInterceptor)
                 .addPathPatterns("/user/**")
-                .excludePathPatterns("/user/user/login")
-                .excludePathPatterns("/user/shop/status");
+                .excludePathPatterns("/user/login");
     }
 
     /**
@@ -68,7 +69,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * 设置静态资源映射
      * @param registry
      */
-    protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/doc.html").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
@@ -78,12 +80,29 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      * @param converters
      */
     @Override
-    protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         // 创建一个消息转换器
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         // 设置一个对象转换器，将Java对象序列化为json数据
         converter.setObjectMapper(new JacksonObjectMapper());
         // 将自己的消息转换器加入容器，并放在首位
         converters.add(0, converter);
+    }
+
+    /**
+     * 配置跨域请求
+     * @param registry
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // 应用于所有路径
+                // 允许的前端域名（根据你的实际部署地址修改）
+                .allowedOrigins(
+                        "http://localhost:5173"    // 本地开发
+                )
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 允许的HTTP方法
+                .allowedHeaders("*")               // 允许所有请求头
+                .allowCredentials(true)            // 允许携带凭证（如cookies）
+                .maxAge(3600);                    // 预检请求缓存时间（秒）
     }
 }

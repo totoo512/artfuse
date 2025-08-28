@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final String DY_LOGIN_URL = "https://open-sandbox.douyin.com/api/apps/v2/jscode2session";
+    private static final String DY_LOGIN_URL = "https://developer.toutiao.com/api/apps/v2/jscode2session";
 
     @Autowired
     private DouYinProperties douYinProperties;
@@ -34,10 +34,14 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     public User dyLogin(UserLoginDTO userLoginDTO) {
+        if (userLoginDTO.getCode() == null) {
+            throw new BaseException(MessageConstant.LOGIN_FAILED);
+        }
+
         // 调用抖音接口，获取openid
         String openid = getOpenid(userLoginDTO);
 
-        if (openid == null) {
+        if (openid == null || openid.isEmpty()) {
             throw new LoginFailedException(MessageConstant.LOGIN_FAILED);
         }
 
