@@ -1,13 +1,11 @@
 package com.zyy.mapper;
 
-import com.zyy.entity.GeneratedImage;
+import com.zyy.entity.AigcStyle;
+import com.zyy.entity.AigcWork;
 import com.zyy.entity.MultimodalAnalysis;
 import com.zyy.entity.UploadedImage;
 import com.zyy.entity.UserSelection;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -48,12 +46,12 @@ public interface ImageMapper {
     
     /**
      * 插入生成图片记录
-     * @param generatedImage
+     * @param aigcWork
      */
-    @Insert("insert into generated_image(analysis_id, analysis_result, image_url, generate_time) " +
-            "values(#{analysisId}, #{analysisResult}, #{imageUrl}, #{generateTime})")
-    @Options(useGeneratedKeys = true, keyProperty = "genImageId")
-    void insertGeneratedImage(GeneratedImage generatedImage);
+    @Insert("insert into aigc_work(user_id, exhibition_record_id, style_id, creation_type, source_image_ids, work_name, is_collected, analysis_id, analysis_result, url, generate_time) " +
+            "values(#{userId}, #{exhibitionRecordId}, #{styleId}, #{creationType}, #{sourceImageIds}, #{workName}, #{isCollected}, #{analysisId}, #{analysisResult}, #{url}, #{generateTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "workId")
+    void insertGeneratedImage(AigcWork aigcWork);
     
     /**
      * 根据分析ID查询多模态分析结果
@@ -68,8 +66,8 @@ public interface ImageMapper {
      * @param genImageId
      * @return
      */
-    @Select("select * from generated_image where gen_image_id = #{genImageId}")
-    GeneratedImage getGeneratedImageById(Long genImageId);
+    @Select("select * from aigc_work where work_id = #{genImageId}")
+    AigcWork getGeneratedImageById(Long genImageId);
     
     /**
      * 插入用户选择记录
@@ -87,4 +85,35 @@ public interface ImageMapper {
      */
     @Select("select * from user_selection where selection_id = #{selectionId}")
     UserSelection getUserSelectionById(Long selectionId);
+
+    /**
+     * 更新图片收藏状态（确保权限验证）
+     * @param imageId 图片ID
+     * @param isFavorite 收藏状态 0=未收藏，1=已收藏
+     * @param userId 用户ID
+     * @return 更新的行数
+     */
+    @Update("UPDATE uploaded_image SET is_favorite = #{isFavorite} WHERE image_id = #{imageId} AND user_id = #{userId}")
+    int updateImageFavorite(@Param("imageId") Long imageId, @Param("isFavorite") Integer isFavorite, @Param("userId") Long userId);
+    
+    /**
+     * 根据图片ID列表查询上传图片记录
+     * @param imageIds
+     * @return
+     */
+    @Select("<script>" +
+            "select * from uploaded_image where image_id in " +
+            "<foreach collection='imageIds' item='imageId' open='(' separator=',' close=')'>" +
+            "#{imageId}" +
+            "</foreach>" +
+            "</script>")
+    List<UploadedImage> getByIds(@Param("imageIds") List<Long> imageIds);
+    
+    /**
+     * 根据风格ID查询AIGC风格信息
+     * @param styleId
+     * @return
+     */
+    @Select("select * from aigc_style where style_id = #{styleId}")
+    AigcStyle getStyleById(Integer styleId);
 }

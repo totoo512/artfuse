@@ -3,7 +3,7 @@ package com.zyy.entity;
 import java.io.Serializable;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,28 +15,43 @@ import lombok.Data;
 public class UploadedImage implements Serializable {
 
     /**
-    * 图片唯一标识
-    */
+     * 图片唯一标识
+     */
     @ApiModelProperty("图片唯一标识")
     private Long imageId;
     /**
-    * 关联用户
-    */
+     * 关联用户
+     */
     @ApiModelProperty("关联用户")
     private Long userId;
     /**
-    * 图片类型：1=人物照，2=看展照
-    */
+     * 图片类型：1=人物照，2=看展照
+     */
     @ApiModelProperty("图片类型：1=人物照，2=看展照")
     private Integer imageType;
     /**
-    * 图片存储地址（如OSS URL）
-    */
+     * 看展记录ID
+     */
+    @ApiModelProperty("看展记录ID")
+    private Long exhibitionRecordId;
+    /**
+     * 图片存储地址（如OSS URL）
+     */
     @ApiModelProperty("图片存储地址（如OSS URL）")
     private String imageUrl;
     /**
-    * 上传时间
-    */
+     * 是否收藏：0=未收藏，1=已收藏
+     */
+    @ApiModelProperty("是否收藏：0=未收藏，1=已收藏")
+    private Integer isFavorite;
+    /**
+     * 用户个人备注
+     */
+    @ApiModelProperty("用户个人备注")
+    private String personalNote;
+    /**
+     * 上传时间
+     */
     @ApiModelProperty("上传时间")
     private LocalDateTime uploadTime;
 

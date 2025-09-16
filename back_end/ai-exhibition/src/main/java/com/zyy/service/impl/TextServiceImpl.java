@@ -2,7 +2,7 @@ package com.zyy.service.impl;
 
 import com.zyy.context.BaseContext;
 import com.zyy.dto.TextGenerateDTO;
-import com.zyy.entity.GeneratedImage;
+import com.zyy.entity.AigcWork;
 import com.zyy.entity.GeneratedText;
 import com.zyy.entity.UserSelection;
 import com.zyy.mapper.ImageMapper;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,13 +62,13 @@ public class TextServiceImpl implements TextService {
 
         // 4. 根据selectionId查询对应的生成图片信息
         Long genImageId = userSelection.getGenImageId();
-        GeneratedImage generatedImage = imageMapper.getGeneratedImageById(genImageId);
-        if (generatedImage == null) {
+        AigcWork aigcWork = imageMapper.getGeneratedImageById(genImageId);
+        if (aigcWork == null) {
             throw new RuntimeException("生成图片记录不存在");
         }
 
         // 5. 获取图片URL列表
-        List<String> imageUrls = Collections.singletonList(generatedImage.getImageUrl());
+        List<String> imageUrls = Collections.singletonList(aigcWork.getUrl());
 
         // 6. 调用豆包生成朋友圈文案（基于图片内容）
         String prompt = """

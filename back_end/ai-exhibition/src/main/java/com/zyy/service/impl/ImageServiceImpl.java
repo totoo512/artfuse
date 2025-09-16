@@ -2,17 +2,15 @@ package com.zyy.service.impl;
 
 import com.zyy.constant.MessageConstant;
 import com.zyy.context.BaseContext;
-import com.zyy.dto.ImageAnalysisDTO;
-import com.zyy.dto.ImageGenerateDTO;
-import com.zyy.dto.ImageSelectDTO;
-import com.zyy.dto.ImageUploadDTO;
-import com.zyy.dto.SingleImageUploadDTO;
-import com.zyy.entity.GeneratedImage;
+import com.zyy.dto.*;
+import com.zyy.entity.ExhibitionRecord;
+import com.zyy.entity.AigcWork;
 import com.zyy.entity.MultimodalAnalysis;
 import com.zyy.entity.UploadedImage;
 import com.zyy.entity.UserSelection;
 import com.zyy.exception.BaseException;
 import com.zyy.mapper.ImageMapper;
+import com.zyy.mapper.RecordMapper;
 import com.zyy.service.ImageService;
 import com.zyy.utils.DouBaoSeedUtil;
 import com.zyy.utils.KelingAiUtil;
@@ -23,7 +21,11 @@ import com.zyy.vo.ImageSelectVO;
 import com.zyy.vo.ImageUploadVO;
 import com.zyy.vo.ImageVO;
 import com.zyy.vo.SingleImageUploadVO;
+import com.zyy.vo.GeneratePostcardVO;
+import com.zyy.entity.AigcStyle;
+import com.zyy.utils.GeminiImageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,9 +45,13 @@ public class ImageServiceImpl implements ImageService {
     @Autowired
     private ImageMapper imageMapper;
     @Autowired
+    private RecordMapper recordMapper;
+    @Autowired
     private DouBaoSeedUtil douBaoSeedUtil;
     @Autowired
     private KelingAiUtil kelingAiUtil;
+    @Autowired
+    private GeminiImageUtil geminiImageUtil;
 
     @Override
     @Transactional
@@ -234,32 +239,39 @@ public class ImageServiceImpl implements ImageService {
         }
         
         // 保存生成结果到数据库
-        List<GeneratedImage> generatedImages = new ArrayList<>();
+        List<AigcWork> aigcWorks = new ArrayList<>();
         List<Long> generatedImageIds = new ArrayList<>();
         List<ImageVO> imageInfos = new ArrayList<>();
 
         for (String generatedImageUrl : generatedImageUrls) {
-            GeneratedImage generatedImage = new GeneratedImage();
-            generatedImage.setAnalysisId(imageGenerateDTO.getAnalysisId());
-            generatedImage.setAnalysisResult(analysis.getAnalysisResult());
-            generatedImage.setImageUrl(generatedImageUrl);
-            generatedImage.setGenerateTime(new Date());
+            AigcWork aigcWork = new AigcWork();
+            aigcWork.setUserId(userId);
+            // aigcWork.setExhibitionRecordId(analysis.getExhibitionRecordId());
+            aigcWork.setStyleId(null); // 魔法图片没有特定风格ID
+            aigcWork.setCreationType(4); // 4表示魔法图片
+            aigcWork.setSourceImageIds(analysis.getPortraitImageId() + "," + analysis.getExhibitionImageIds());
+            aigcWork.setWorkName("魔法图片");
+            aigcWork.setIsCollected(0); // 默认未收藏
+            aigcWork.setAnalysisId(imageGenerateDTO.getAnalysisId());
+            aigcWork.setAnalysisResult(analysis.getAnalysisResult());
+            aigcWork.setUrl(generatedImageUrl);
+            aigcWork.setGenerateTime(LocalDateTime.now());
 
             // 保存到数据库
-            imageMapper.insertGeneratedImage(generatedImage);
+            imageMapper.insertGeneratedImage(aigcWork);
 
-            generatedImages.add(generatedImage);
-            generatedImageIds.add(generatedImage.getGenImageId());
+            aigcWorks.add(aigcWork);
+            generatedImageIds.add(aigcWork.getWorkId());
 
             // 构建返回的图片信息
             ImageVO imageInfo = new ImageVO();
-            imageInfo.setImageId(generatedImage.getGenImageId());
-            imageInfo.setImageUrl(generatedImage.getImageUrl());
+            imageInfo.setImageId(aigcWork.getWorkId());
+            imageInfo.setImageUrl(aigcWork.getUrl());
             imageInfos.add(imageInfo);
         }
         
         log.info("生成风格化图片完成，用户ID: {}, 分析ID: {}, 生成图片数量: {}", 
-                userId, imageGenerateDTO.getAnalysisId(), generatedImages.size());
+                userId, imageGenerateDTO.getAnalysisId(), aigcWorks.size());
         
         return ImageGenerateVO.builder()
                 .generatedImageIds(generatedImageIds)
@@ -274,13 +286,13 @@ public class ImageServiceImpl implements ImageService {
         Long userId = BaseContext.getCurrentId();
         
         // 验证生成图片是否存在
-        GeneratedImage generatedImage = imageMapper.getGeneratedImageById(imageSelectDTO.getGenImageId());
-        if (generatedImage == null) {
+        AigcWork aigcWork = imageMapper.getGeneratedImageById(imageSelectDTO.getGenImageId());
+        if (aigcWork == null) {
             throw new BaseException("生成图片不存在");
         }
         
         // 验证生成图片是否属于当前用户（通过分析结果验证）
-        MultimodalAnalysis analysis = imageMapper.getAnalysisById(generatedImage.getAnalysisId());
+        MultimodalAnalysis analysis = imageMapper.getAnalysisById(aigcWork.getAnalysisId());
         if (analysis == null || !analysis.getUserId().equals(userId)) {
             throw new BaseException("无权限访问该生成图片");
         }
@@ -308,12 +320,6 @@ public class ImageServiceImpl implements ImageService {
         // 获取当前用户ID
         Long userId = BaseContext.getCurrentId();
         
-        // 验证图片类型
-        if (singleImageUploadDTO.getImageType() == null || 
-            (singleImageUploadDTO.getImageType() != 1 && singleImageUploadDTO.getImageType() != 2)) {
-            throw new BaseException("图片类型错误，只支持1=人物照，2=看展照");
-        }
-        
         // 验证文件
         if (singleImageUploadDTO.getImage() == null || singleImageUploadDTO.getImage().isEmpty()) {
             throw new BaseException("图片文件不能为空");
@@ -327,13 +333,31 @@ public class ImageServiceImpl implements ImageService {
         uploadedImage.setUserId(userId);
         uploadedImage.setImageType(singleImageUploadDTO.getImageType());
         uploadedImage.setImageUrl(imageUrl);
+        uploadedImage.setExhibitionRecordId(singleImageUploadDTO.getRecordId());
+        uploadedImage.setIsFavorite(0); // 默认未收藏
         uploadedImage.setUploadTime(LocalDateTime.now());
         
         // 保存到数据库
         imageMapper.insert(uploadedImage);
         
-        log.info("单文件图片上传成功，用户ID: {}, 图片类型: {}, 图片ID: {}", 
-                userId, singleImageUploadDTO.getImageType(), uploadedImage.getImageId());
+        // 检查展览记录是否有封面图片，如果没有则将当前上传的图片设置为封面
+        try {
+            ExhibitionRecord record = recordMapper.getById(singleImageUploadDTO.getRecordId());
+            if (record != null && (record.getCoverImageUrl() == null || record.getCoverImageUrl().trim().isEmpty())) {
+                ExhibitionRecord updateRecord = new ExhibitionRecord();
+                updateRecord.setRecordId(singleImageUploadDTO.getRecordId());
+                updateRecord.setCoverImageUrl(imageUrl);
+                updateRecord.setUpdateTime(LocalDateTime.now());
+                recordMapper.update(updateRecord);
+                log.info("自动设置封面图片，展览记录ID: {}, 封面图片URL: {}", singleImageUploadDTO.getRecordId(), imageUrl);
+            }
+        } catch (Exception e) {
+            log.warn("设置封面图片失败，展览记录ID: {}, 错误: {}", singleImageUploadDTO.getRecordId(), e.getMessage());
+            // 不影响主流程，继续执行
+        }
+        
+        log.info("单文件图片上传成功，用户ID: {}, 展览记录ID: {}, 图片类型: {}, 图片ID: {}", 
+                userId, singleImageUploadDTO.getRecordId(), singleImageUploadDTO.getImageType(), uploadedImage.getImageId());
         
         // 构建返回结果
         return SingleImageUploadVO.builder()
@@ -352,5 +376,98 @@ public class ImageServiceImpl implements ImageService {
             log.error("文件上传失败：{}", e.toString());
             throw new BaseException(MessageConstant.UPLOAD_FAILED);
         }
+    }
+
+
+    @Override
+    @Transactional
+    public void updateImageFavorite(ImageFavoriteDTO imageFavoriteDTO) {
+        // 获取当前用户ID
+        Long userId = BaseContext.getCurrentId();
+        log.info("更新图片收藏状态，用户ID: {}, 图片ID: {}, 收藏状态: {}", userId, imageFavoriteDTO.getImageId(), imageFavoriteDTO.getIsFavorite());
+
+        // 调用Mapper更新图片收藏状态，确保权限验证
+        int updatedRows = imageMapper.updateImageFavorite(Long.parseLong(imageFavoriteDTO.getImageId()), imageFavoriteDTO.getIsFavorite(), userId);
+
+        if (updatedRows == 0) {
+            log.error("更新图片收藏状态失败，可能是权限不足或图片不存在，用户ID: {}, 图片ID: {}", userId, imageFavoriteDTO.getImageId());
+            throw new BaseException("更新图片收藏状态失败，权限不足或图片不存在");
+        }
+
+        log.info("图片收藏状态更新成功，用户ID: {}, 图片ID: {}, 收藏状态: {}", userId, imageFavoriteDTO.getImageId(), imageFavoriteDTO.getIsFavorite());
+    }
+    
+    @Override
+    @Transactional
+    public GeneratePostcardVO generatePostcard(GeneratePostcardDTO generatePostcardDTO) {
+        // 获取当前用户ID
+        Long userId = BaseContext.getCurrentId();
+        log.info("开始生成明信片图鉴，用户ID: {}, 风格ID: {}, 图片ID列表: {}", 
+                userId, generatePostcardDTO.getStyleId(), generatePostcardDTO.getImageIds());
+        
+        // 1. 通过imageIds查找uploaded_image表获取所有原图片地址
+        List<UploadedImage> uploadedImages = imageMapper.getByIds(generatePostcardDTO.getImageIds());
+        if (uploadedImages.isEmpty()) {
+            throw new BaseException("未找到指定的图片");
+        }
+        
+        // 验证图片是否属于当前用户
+        for (UploadedImage image : uploadedImages) {
+            if (!image.getUserId().equals(userId)) {
+                throw new BaseException("无权限访问图片ID: " + image.getImageId());
+            }
+        }
+        
+        // 提取图片URL列表
+        List<String> imageUrls = uploadedImages.stream()
+                .map(UploadedImage::getImageUrl)
+                .toList();
+        
+        // 2. 通过styleId查找aigc_style表获得prompt
+        AigcStyle aigcStyle = imageMapper.getStyleById(generatePostcardDTO.getStyleId());
+        if (aigcStyle == null) {
+            throw new BaseException("未找到指定的风格");
+        }
+        
+        String prompt = aigcStyle.getPrompt();
+        if (prompt == null || prompt.trim().isEmpty()) {
+            throw new BaseException("风格提示词为空");
+        }
+        
+        // 3. 调用GeminiImageUtil生成组合图片
+        String generatedImageUrl;
+        try {
+            generatedImageUrl = geminiImageUtil.generateImageFromMultipleImages(prompt, imageUrls);
+            log.info("Gemini生成明信片图鉴成功，用户ID: {}, 生成图片URL: {}", userId, generatedImageUrl);
+        } catch (Exception e) {
+            log.error("Gemini生成明信片图鉴失败，用户ID: {}, 错误: {}", userId, e.getMessage(), e);
+            throw new BaseException("生成明信片图鉴失败: " + e.getMessage());
+        }
+        
+        // 4. 将生成图相关信息保存在aigc_work表中
+        AigcWork aigcWork = new AigcWork();
+        aigcWork.setUserId(userId);
+        // aigcWork.setExhibitionRecordId(uploadedImages.get(0).getExhibitionRecordId()); // 使用第一张图片的展览记录ID
+        aigcWork.setStyleId(generatePostcardDTO.getStyleId());
+        aigcWork.setCreationType(1); // 1表示明信片图鉴
+        aigcWork.setSourceImageIds(StringUtils.join(generatePostcardDTO.getImageIds(), ","));
+        aigcWork.setWorkName("明信片图鉴 - " + aigcStyle.getStyleName());
+        aigcWork.setIsCollected(0); // 默认未收藏
+        aigcWork.setAnalysisId(null); // 明信片没有分析ID
+        aigcWork.setAnalysisResult(null); // 明信片没有分析结果
+        aigcWork.setUrl(generatedImageUrl);
+        aigcWork.setGenerateTime(LocalDateTime.now());
+        
+        // 保存到数据库
+        imageMapper.insertGeneratedImage(aigcWork);
+        
+        log.info("明信片图鉴生成完成，用户ID: {}, 生成图片ID: {}, 图片URL: {}", 
+                userId, aigcWork.getWorkId(), generatedImageUrl);
+        
+        // 构建返回结果
+        GeneratePostcardVO result = new GeneratePostcardVO();
+        result.setImageUrl(generatedImageUrl);
+        
+        return result;
     }
 }

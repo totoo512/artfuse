@@ -40,6 +40,11 @@ public class VideoTask implements Serializable {
     @ApiModelProperty("视频生成的核心Prompt")
     private String videoPrompt;
     /**
+    * 即梦API任务ID
+    */
+    @ApiModelProperty("即梦API任务ID")
+    private String jimengTaskId;
+    /**
     * 任务状态：1=排队中，2=处理中，3=完成，4=失败
     */
     @ApiModelProperty("任务状态：1=排队中，2=处理中，3=完成，4=失败")

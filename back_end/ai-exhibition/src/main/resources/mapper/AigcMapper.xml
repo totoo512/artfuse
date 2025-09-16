@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyy.mapper.AigcMapper">
+
+    <!-- 统计用户AIGC作品总数 -->
+    <select id="countAigcWorks" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM aigc_work
+        WHERE user_id = #{userId}
+        <if test="creationType != null">
+            AND creation_type = #{creationType}
+        </if>
+    </select>
+
+    <!-- 分页查询用户AIGC作品列表 -->
+    <select id="selectAigcWorksByPage" resultType="com.zyy.vo.AigcWorkVO">
+        SELECT
+            aw.work_id as workId,
+            aw.url as url,
+            ast.style_name as styleName
+        FROM aigc_work aw
+        LEFT JOIN aigc_style ast ON aw.style_id = ast.style_id
+        WHERE aw.user_id = #{userId}
+        <if test="creationType != null">
+            AND aw.creation_type = #{creationType}
+        </if>
+        ORDER BY aw.generate_time DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+</mapper>

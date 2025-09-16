@@ -1,7 +1,7 @@
 package com.zyy.service.impl;
 
 import com.zyy.dto.VideoTaskCreateDTO;
-import com.zyy.entity.GeneratedImage;
+import com.zyy.entity.AigcWork;
 import com.zyy.entity.UploadedImage;
 import com.zyy.entity.UserSelection;
 import com.zyy.entity.VideoTask;
@@ -10,6 +10,7 @@ import com.zyy.mapper.ImageMapper;
 import com.zyy.mapper.VideoMapper;
 import com.zyy.service.VideoService;
 import com.zyy.context.BaseContext;
+import com.zyy.utils.JimengUtil;
 import com.zyy.utils.MailUtil;
 import com.zyy.utils.VolcengineTosUtil;
 import com.zyy.vo.VideoTaskCreateVO;
@@ -24,7 +25,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * 视频生成服务实现类
@@ -43,6 +43,9 @@ public class VideoServiceImpl implements VideoService {
     
     @Autowired
     private WebSocketServer webSocketServer;
+    
+    @Autowired
+    private JimengUtil jimengUtil;
 
     @Override
     public VideoTaskCreateVO createVideoTask(VideoTaskCreateDTO videoTaskCreateDTO) {
@@ -67,10 +70,31 @@ public class VideoServiceImpl implements VideoService {
         }
         
         // 获取生成图片的分析结果作为视频提示词
-        GeneratedImage genImage = imageMapper.getGeneratedImageById(userSelection.getGenImageId());
+        AigcWork aigcWork = imageMapper.getGeneratedImageById(userSelection.getGenImageId());
         String videoPrompt = "";
-        if (genImage != null && genImage.getAnalysisResult() != null) {
-            videoPrompt = genImage.getAnalysisResult();
+//        if (aigcWork != null && aigcWork.getAnalysisResult() != null) {
+//            videoPrompt = aigcWork.getAnalysisResult();
+//        }
+        
+        // 调用即梦API提交视频生成任务
+        String jimengTaskId = null;
+        try {
+            // 构建即梦API请求参数
+            String firstFrameUrl = refImage.getImageUrl();
+            String lastFrameUrl = aigcWork != null ? aigcWork.getUrl() : "";
+            
+            // 提交任务到即梦API
+            JimengUtil.TaskResult jimengResult = jimengUtil.submitTask(firstFrameUrl, lastFrameUrl);
+            
+            if (jimengResult.isSuccess()) {
+                jimengTaskId = jimengResult.getTaskId();
+                System.out.println("成功提交即梦API任务，jimengTaskId: " + jimengTaskId);
+            } else {
+                throw new BaseException("即梦API任务提交失败: " + jimengResult.getErrorMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("提交即梦API任务异常: " + e.getMessage());
+            throw new BaseException("即梦API调用失败: " + e.getMessage());
         }
         
         // 创建视频任务实体
@@ -79,7 +103,8 @@ public class VideoServiceImpl implements VideoService {
         videoTask.setSelectionId(videoTaskCreateDTO.getSelectionId());
         videoTask.setRefImageId(videoTaskCreateDTO.getRefImageId());
         videoTask.setVideoPrompt(videoPrompt);
-        videoTask.setStatus(1); // 1=排队中
+        videoTask.setJimengTaskId(jimengTaskId);
+        videoTask.setStatus(2); // 2=处理中（已提交到即梦API）
         videoTask.setCreateTime(LocalDateTime.now());
         videoTask.setUpdateTime(LocalDateTime.now());
         
@@ -90,9 +115,9 @@ public class VideoServiceImpl implements VideoService {
         String imageUrl1 = "";
         String imageUrl2 = "";
         
-        // imageUrl1: 从generated_image表通过genImageId获取
-        if (genImage != null) {
-            imageUrl1 = genImage.getImageUrl();
+        // imageUrl1: 从aigc_work表通过workId获取
+        if (aigcWork != null) {
+            imageUrl1 = aigcWork.getUrl();
         }
         
         // imageUrl2: 从uploaded_image表通过refImageId获取
@@ -113,7 +138,7 @@ public class VideoServiceImpl implements VideoService {
         }
         
         // 异步发送邮件通知
-        sendTaskCreationEmail(videoTask.getTaskId(), userId);
+//        sendTaskCreationEmail(videoTask.getTaskId(), userId);
         
         // 构建返回结果
         VideoTaskCreateVO vo = new VideoTaskCreateVO();
@@ -132,6 +157,32 @@ public class VideoServiceImpl implements VideoService {
         VideoTask videoTask = videoMapper.selectVideoTaskByTaskIdAndUserId(taskId, userId);
         if (videoTask == null) {
             throw new BaseException("视频任务不存在或无权限访问");
+        }
+        
+        // 如果任务状态为处理中且有即梦任务ID，查询即梦API任务状态
+        if (videoTask.getStatus() == 2 && videoTask.getJimengTaskId() != null) {
+            try {
+                JimengUtil.TaskResult queryResult = jimengUtil.queryTask(videoTask.getJimengTaskId());
+                
+                if (queryResult.isSuccess() && queryResult.isDone()) {
+                    // 任务完成，更新数据库
+                    videoMapper.updateVideoTaskUrl(taskId, queryResult.getVideoUrl(), 3, LocalDateTime.now());
+                    videoTask.setStatus(3);
+                    videoTask.setVideoUrl(queryResult.getVideoUrl());
+                    videoTask.setUpdateTime(LocalDateTime.now());
+                } else if (!queryResult.isSuccess() || queryResult.isFailed()) {
+                    // 任务失败，更新数据库
+                    String errorMsg = queryResult.getErrorMessage() != null ? queryResult.getErrorMessage() : "视频生成失败";
+                    videoMapper.updateVideoTaskStatus(taskId, 4, errorMsg, LocalDateTime.now());
+                    videoTask.setStatus(4);
+                    videoTask.setErrorMsg(errorMsg);
+                    videoTask.setUpdateTime(LocalDateTime.now());
+                }
+                // 如果任务仍在处理中，保持原状态不变
+            } catch (Exception e) {
+                System.err.println("查询即梦API任务状态失败: " + e.getMessage());
+                // 查询失败不影响返回结果，保持原状态
+            }
         }
         
         // 构建返回结果

@@ -65,3 +65,11 @@ zyy:
     secret-key: ${KLINGAI_SECRET_KEY}
     base-url: ${KLINGAI_BASE_URL}
     image-count: ${KLINGAI_IMAGE_COUNT}
+  jimeng:
+    access-key: ${JIMENG_ACCESS_KEY}
+    secret-key: ${JIMENG_SECRET_KEY}
+    region: ${JIMENG_REGION:cn-north-1}
+    service: ${JIMENG_SERVICE:cv}
+    base-url: ${JIMENG_BASE_URL:https://visual.volcengineapi.com}
+    version: ${JIMENG_VERSION:2022-08-31}
+    req-key: ${JIMENG_REQ_KEY:jimeng_i2v_first_tail_v30}

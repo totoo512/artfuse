@@ -21,8 +21,8 @@ public interface VideoMapper {
      * 插入视频任务
      * @param videoTask 视频任务实体
      */
-    @Insert("INSERT INTO video_task (user_id, selection_id, ref_image_id, video_prompt, status, create_time, update_time) " +
-            "VALUES (#{userId}, #{selectionId}, #{refImageId}, #{videoPrompt}, #{status}, #{createTime}, #{updateTime})")
+    @Insert("INSERT INTO video_task (user_id, selection_id, ref_image_id, video_prompt, jimeng_task_id, status, create_time, update_time) " +
+            "VALUES (#{userId}, #{selectionId}, #{refImageId}, #{videoPrompt}, #{jimengTaskId}, #{status}, #{createTime}, #{updateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "taskId")
     void insertVideoTask(VideoTask videoTask);
 
@@ -32,7 +32,7 @@ public interface VideoMapper {
      * @param userId 用户ID
      * @return 视频任务实体
      */
-    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, status, video_url, error_msg, create_time, update_time " +
+    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, jimeng_task_id, status, video_url, error_msg, create_time, update_time " +
             "FROM video_task WHERE task_id = #{taskId} AND user_id = #{userId}")
     VideoTask selectVideoTaskByTaskIdAndUserId(@Param("taskId") Long taskId, @Param("userId") Long userId);
 
@@ -47,13 +47,25 @@ public interface VideoMapper {
             "WHERE task_id = #{taskId}")
     void updateVideoTaskUrl(@Param("taskId") Long taskId, @Param("videoUrl") String videoUrl, 
                            @Param("status") Integer status, @Param("updateTime") java.time.LocalDateTime updateTime);
+    
+    /**
+     * 更新视频任务状态和错误信息
+     * @param taskId 任务ID
+     * @param status 状态
+     * @param errorMsg 错误信息
+     * @param updateTime 更新时间
+     */
+    @Update("UPDATE video_task SET status = #{status}, error_msg = #{errorMsg}, update_time = #{updateTime} " +
+            "WHERE task_id = #{taskId}")
+    void updateVideoTaskStatus(@Param("taskId") Long taskId, @Param("status") Integer status,
+                              @Param("errorMsg") String errorMsg, @Param("updateTime") java.time.LocalDateTime updateTime);
 
     /**
      * 根据任务ID查询视频任务（不验证用户ID）
      * @param taskId 任务ID
      * @return 视频任务实体
      */
-    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, status, video_url, error_msg, create_time, update_time " +
+    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, jimeng_task_id, status, video_url, error_msg, create_time, update_time " +
             "FROM video_task WHERE task_id = #{taskId}")
     VideoTask selectVideoTaskByTaskId(@Param("taskId") Long taskId);
     
@@ -61,7 +73,7 @@ public interface VideoMapper {
      * 查询所有未完成的视频任务（状态不为3=完成）
      * @return 未完成的视频任务列表
      */
-    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, status, video_url, error_msg, create_time, update_time " +
+    @Select("SELECT task_id, user_id, selection_id, ref_image_id, video_prompt, jimeng_task_id, status, video_url, error_msg, create_time, update_time " +
             "FROM video_task WHERE status != 3 ORDER BY create_time DESC")
     List<VideoTask> selectUnfinishedVideoTasks();
     
@@ -69,12 +81,12 @@ public interface VideoMapper {
      * 查询所有未完成的视频任务及其关联的图片URL
      * @return 未完成的视频任务及图片URL列表
      */
-    @Select("SELECT vt.task_id, vt.user_id, vt.selection_id, vt.ref_image_id, vt.video_prompt, vt.status, " +
+    @Select("SELECT vt.task_id, vt.user_id, vt.selection_id, vt.ref_image_id, vt.video_prompt, vt.jimeng_task_id, vt.status, " +
             "vt.video_url, vt.error_msg, vt.create_time, vt.update_time, " +
-            "gi.image_url AS gen_image_url, ui.image_url AS ref_image_url " +
+            "gi.url AS gen_image_url, ui.image_url AS ref_image_url " +
             "FROM video_task vt " +
             "LEFT JOIN user_selection us ON vt.selection_id = us.selection_id " +
-            "LEFT JOIN generated_image gi ON us.gen_image_id = gi.gen_image_id " +
+            "LEFT JOIN aigc_work gi ON us.gen_image_id = gi.work_id " +
             "LEFT JOIN uploaded_image ui ON vt.ref_image_id = ui.image_id " +
             "WHERE vt.status != 3 ORDER BY vt.create_time DESC")
     List<Map<String, Object>> selectUnfinishedVideoTasksWithImages();

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zyy.mapper.UserMapper">
+
+    <!-- 插入用户 -->
+    <insert id="insert" parameterType="com.zyy.entity.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO user (
+            username,
+            password,
+            avatar_url,
+            phone,
+            openid,
+            generated_works_count,
+            points,
+            membership_status,
+            create_time,
+            update_time
+        ) VALUES (
+            #{username},
+            #{password},
+            #{avatarUrl},
+            #{phone},
+            #{openid},
+            #{generatedWorksCount},
+            #{points},
+            #{membershipStatus},
+            #{createTime},
+            #{updateTime}
+        )
+    </insert>
+
+    <!-- 根据用户名查询用户 -->
+    <select id="getByUsername" parameterType="string" resultType="com.zyy.entity.User">
+        SELECT 
+            user_id as userId,
+            username,
+            password,
+            avatar_url as avatarUrl,
+            phone,
+            openid,
+            generated_works_count as generatedWorksCount,
+            points,
+            membership_status as membershipStatus,
+            create_time as createTime,
+            update_time as updateTime
+        FROM user
+        WHERE username = #{username}
+    </select>
+
+    <!-- 根据用户ID查询用户 -->
+    <select id="getById" parameterType="long" resultType="com.zyy.entity.User">
+        SELECT 
+            user_id as userId,
+            username,
+            password,
+            avatar_url as avatarUrl,
+            phone,
+            openid,
+            generated_works_count as generatedWorksCount,
+            points,
+            membership_status as membershipStatus,
+            create_time as createTime,
+            update_time as updateTime
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 根据openid查询用户 -->
+    <select id="getByOpenid" resultType="com.zyy.entity.User">
+        SELECT * FROM user WHERE openid = #{openid}
+    </select>
+
+    <!-- 更新用户信息 -->
+    <update id="update" parameterType="com.zyy.entity.User">
+        UPDATE user
+        <set>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="avatarUrl != null and avatarUrl != ''">
+                avatar_url = #{avatarUrl},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="generatedWorksCount != null">
+                generated_works_count = #{generatedWorksCount},
+            </if>
+            <if test="points != null">
+                points = #{points},
+            </if>
+            <if test="membershipStatus != null">
+                membership_status = #{membershipStatus},
+            </if>
+            update_time = #{updateTime}
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

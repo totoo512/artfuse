@@ -1,21 +1,21 @@
 package com.zyy.controller.user;
 
-import com.zyy.dto.ImageAnalysisDTO;
-import com.zyy.dto.ImageGenerateDTO;
-import com.zyy.dto.ImageSelectDTO;
-import com.zyy.dto.ImageUploadDTO;
-import com.zyy.dto.SingleImageUploadDTO;
+import com.zyy.dto.*;
 import com.zyy.result.Result;
 import com.zyy.service.ImageService;
+import com.zyy.service.RecordService;
 import com.zyy.vo.ImageAnalysisVO;
 import com.zyy.vo.ImageGenerateVO;
 import com.zyy.vo.ImageSelectVO;
 import com.zyy.vo.ImageUploadVO;
 import com.zyy.vo.SingleImageUploadVO;
+import com.zyy.vo.GeneratePostcardVO;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user/image")
@@ -134,17 +134,12 @@ public class ImageController {
     @PostMapping("/single-upload")
     @ApiOperation("单文件上传图片接口")
     public Result<SingleImageUploadVO> singleUploadImage(@ModelAttribute SingleImageUploadDTO singleImageUploadDTO) {
-        log.info("单文件上传图片接口: imageType={}, fileName={}", 
-                singleImageUploadDTO.getImageType(), 
-                singleImageUploadDTO.getImage() != null ? singleImageUploadDTO.getImage().getOriginalFilename() : "null");
+        log.info("单文件上传图片接口: recordId={}, imageType={}",
+                singleImageUploadDTO.getRecordId(),
+                singleImageUploadDTO.getImageType());
         
-        // 参数验证
         if (singleImageUploadDTO.getImageType() == null) {
             return Result.error("图片类型不能为空");
-        }
-        
-        if (singleImageUploadDTO.getImageType() != 1 && singleImageUploadDTO.getImageType() != 2) {
-            return Result.error("图片类型错误，只支持1=人物照，2=看展照");
         }
         
         if (singleImageUploadDTO.getImage() == null || singleImageUploadDTO.getImage().isEmpty()) {
@@ -158,6 +153,45 @@ public class ImageController {
         SingleImageUploadVO singleImageUploadVO = imageService.singleUploadImage(singleImageUploadDTO);
         
         return Result.success(singleImageUploadVO);
+    }
+
+    /**
+     * 图片收藏/取消收藏接口
+     * @param imageFavoriteDTO
+     * @return
+     */
+    @PostMapping("/favorite")
+    @ApiOperation("图片收藏/取消收藏接口")
+    public Result<Object> updateImageFavorite(@RequestBody @Valid ImageFavoriteDTO imageFavoriteDTO) {
+        log.info("图片收藏/取消收藏接口: {}", imageFavoriteDTO);
+
+        imageService.updateImageFavorite(imageFavoriteDTO);
+
+        return Result.success();
+    }
+
+    /**
+     * 多图生成明信片图鉴接口
+     * @param generatePostcardDTO
+     * @return
+     */
+    @PostMapping("/generate-postcard")
+    @ApiOperation("多图生成明信片图鉴接口")
+    public Result<GeneratePostcardVO> generatePostcard(@RequestBody @Valid GeneratePostcardDTO generatePostcardDTO) {
+        log.info("多图生成明信片图鉴接口: {}", generatePostcardDTO);
+        
+        // 参数验证
+        if (generatePostcardDTO.getStyleId() == null) {
+            return Result.error("风格ID不能为空");
+        }
+        
+        if (generatePostcardDTO.getImageIds() == null || generatePostcardDTO.getImageIds().isEmpty()) {
+            return Result.error("图片ID列表不能为空");
+        }
+        
+        GeneratePostcardVO generatePostcardVO = imageService.generatePostcard(generatePostcardDTO);
+        
+        return Result.success(generatePostcardVO);
     }
 
 }

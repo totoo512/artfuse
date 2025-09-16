@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 
 /**
 * 创作中心模块 - AI生成风格化图片表（PRD核心转化路径数据）
-* @TableName generated_image
+* @TableName aigc_work
 */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GeneratedImage implements Serializable {
+public class AigcWork implements Serializable {
 
     /**
     * 生成图片唯一标识
     */
-    @ApiModelProperty("生成图片唯一标识")
-    private Long genImageId;
+    @ApiModelProperty("生成结果唯一标识")
+    private Long workId;
     /**
     * 关联用户
     */
@@ -72,7 +72,7 @@ public class GeneratedImage implements Serializable {
     * 生成图片存储地址
     */
     @ApiModelProperty("生成图片存储地址")
-    private String imageUrl;
+    private String url;
     /**
     * 生成时间
     */

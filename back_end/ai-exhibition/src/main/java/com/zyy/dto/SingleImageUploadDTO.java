@@ -21,4 +21,8 @@ public class SingleImageUploadDTO {
     @ApiModelProperty(value = "图片文件", required = true)
     @NotNull(message = "图片文件不能为空")
     private MultipartFile image;
+
+    @ApiModelProperty(value = "展览记录ID", required = true)
+    @NotNull(message = "展览记录ID不能为空")
+    private Long recordId;
 }
